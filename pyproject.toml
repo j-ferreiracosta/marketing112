@@ -1,0 +1,20 @@
+[project]
+name = "marketing112"
+version = "0.1.0"
+description = "marketing112 using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "crewai[tools]>=0.86.0,<1.0.0"
+]
+
+[project.scripts]
+marketing112 = "marketing112.main:run"
+run_crew = "marketing112.main:run"
+train = "marketing112.main:train"
+replay = "marketing112.main:replay"
+test = "marketing112.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
