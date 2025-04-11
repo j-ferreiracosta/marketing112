@@ -78,7 +78,9 @@ class FullProjectContext(BaseModel):
     communication_style: Optional[CommunicationStyle] = None
     campaign_details: Optional[CampaignDetails] = None
     source_language: str = Field(default="Portuguese", description="Language of the source document.")
-    other_notes: List[str] = Field(default=[], description="Any other relevant notes extracted.")
+    theme_summary: Optional[str] = Field(description="A brief summary of the core theme/topic researched using external tools.")
+    link_summaries: List[Dict[str, str]] = Field(default=[], description="List of dictionaries, each containing 'url' and 'summary' for relevant links found and scraped from the input text.")
+    other_notes: List[str] = Field(default=[], description="Any other relevant notes extracted or derived.")
 
 
 # Models for Strategy and Content (Potentially containing Portuguese)
@@ -167,9 +169,7 @@ class MarketingInfoProductCrew():
     def input_text_analyzer(self) -> Agent:
         return Agent(
             config=self.agents_config['input_text_analyzer'],
-            verbose=True,
-            memory=False,
-            # No tools needed for basic text analysis, relies on LLM capability
+            verbose=True
         )
 
     @agent
@@ -243,7 +243,8 @@ class MarketingInfoProductCrew():
         return Task(
             config=self.tasks_config['extract_and_structure_knowledge_task'],
             agent=self.input_text_analyzer(),
-            output_pydantic=FullProjectContext
+            output_pydantic=FullProjectContext,
+            output_file='project_context_pt.md'
             # The input 'knowledge_base_text' will be interpolated from crew.kickoff()
         )
 

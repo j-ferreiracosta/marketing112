@@ -4,26 +4,51 @@ This project utilizes the CrewAI framework to automate the generation of a compr
 
 ## Features
 
-*   **Unstructured Input Processing:** Reads raw text describing the project from `src/marketing112/inputs.txt`.
-*   **Knowledge Extraction:** Structures the input text into a usable format (`FullProjectContext`).
-*   **Market & Competitor Analysis:** Conducts research using web search tools.
-*   **Strategy Development:** Defines a launch strategy (`LaunchStrategy`), including goals, audience summary, USP, offer stack, phasing, messaging, channels, and KPIs.
-*   **Content Creation:** Generates various marketing assets in Portuguese:
-    *   Launch Hooks/Angles (`LaunchHookList`)
-    *   Lead Magnet Brief (`LeadMagnetBrief`)
-    *   Opt-in Page Copy (`PageCopy`)
-    *   Sales Page Copy (Draft saved to `.md`)
-    *   Email Sequences (Pre-launch & Sales) (`EmailSequence`)
-    *   Social Media Post Plan (`SocialMediaPlan`)
-*   **Content Review:** Simulates a review process, providing feedback.
-*   **Final Report Compilation:** Consolidates all generated materials into a final launch plan document.
-*   **Powered by Gemini:** Explicitly configured to use Google's Gemini model via `langchain-google-genai`.
+*   **Unstructured Input Processing:** Reads raw text from `src/marketing112/inputs.txt` to kickstart the crew's workflow.
+*   **Knowledge Extraction:**
+    *   **Agent:** `input_text_analyzer`
+    *   **Task:** `extract_and_structure_knowledge_task`
+    *   **Role:** Extracts key information from unstructured text and structures it into the `FullProjectContext` model.
+*   **Market & Competitor Analysis:**
+    *   **Agent:** `lead_market_analyst`
+    *   **Task:** `project_competitors_task`
+    *   **Role:** Identifies and analyzes competitors, focusing on Instagram presence and broader market context.
+*   **Strategy Development:**
+    *   **Agent:** `chief_marketing_strategist`
+    *   **Task:** `marketing_strategy_task`
+    *   **Role:** Develops a comprehensive launch strategy, including phases, messaging, and KPIs.
+*   **Content Creation:**
+    *   **Agent:** `creative_content_creator`
+    *   **Tasks:**
+        *   `launch_angle_and_hook_task` - Develops creative angles for the launch.
+        *   `create_lead_magnet_brief_task` - Defines the concept for a lead magnet.
+        *   `write_optin_page_copy_task` - Crafts compelling opt-in page copy.
+        *   `write_sales_page_copy_task` - Drafts long-form sales page copy.
+    *   **Role:** Produces engaging content and copy in Portuguese for various marketing assets.
+*   **Email Marketing:**
+    *   **Agent:** `email_marketing_specialist`
+    *   **Tasks:**
+        *   `write_email_sequence_task_PRELAUNCH` - Creates pre-launch email sequences.
+        *   `write_email_sequence_task_SALES` - Develops sales phase email sequences.
+    *   **Role:** Designs and writes email sequences to nurture leads and drive sales.
+*   **Social Media Management:**
+    *   **Agent:** `social_media_manager`
+    *   **Task:** `write_social_media_launch_posts_task`
+    *   **Role:** Plans and drafts social media posts to build community and drive engagement.
+*   **Content Review:**
+    *   **Agent:** `chief_creative_director`
+    *   **Task:** `review_launch_content_task`
+    *   **Role:** Ensures all content aligns with brand voice and strategic goals.
+*   **Final Report Compilation:**
+    *   **Agent:** `final_report_synthesizer`
+    *   **Task:** `compile_final_report_task`
+    *   **Role:** Synthesizes all outputs into a comprehensive launch plan document.
+*   **Powered by Gemini:** Utilizes Google's Gemini model for advanced language processing and task execution.
 
 ## Project Structure
 
 ```
 marketing112/
-├── .env                  # Environment variables (API keys) - **DO NOT COMMIT**
 ├── .gitignore            # Specifies intentionally untracked files by Git
 ├── config/               # CrewAI agent and task configurations
 │   ├── agents.yaml
