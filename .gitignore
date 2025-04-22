@@ -1,0 +1,6 @@
+.env
+__pycache__/
+.venv/
+oldReports/
+src/marketing112/mainV1.py
+src/marketing112/crewV1.py

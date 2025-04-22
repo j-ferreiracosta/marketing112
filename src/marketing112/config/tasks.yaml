@@ -1,0 +1,127 @@
+# config/tasks.yaml
+
+# --- Input & Foundation Tasks ---
+extract_and_structure_knowledge_task:
+  description: >
+    Analyze the provided knowledge base text ({knowledge_base_text}), which is written in Portuguese
+    and contains unstructured details about the info-product launch.
+    Identify and extract key information covering:
+    1. Product Details (Name, Description, Benefits, USP, Price, Link Placeholder)
+    2. Campaign Objectives (Primary, Specific/Measurable, Funnel Stage, CTAs)
+    3. Target Audience (Demographics, Psychographics, Behaviors, Challenges, Segments)
+    4. Communication Style (Tone, Keywords, Brand Restrictions, Examples)
+    5. Additional Details (Budget, Duration, Past References, Visuals, Platforms).
+    Structure this extracted information using the FullProjectContext Pydantic model.
+    Preserve the original Portuguese language.
+  expected_output: >
+    A structured FullProjectContext Pydantic object containing all the key information
+    extracted accurately from the input text, maintaining the original Portuguese language.
+
+research_task:
+  description: >
+    Based on the structured project context provided by the knowledge extraction task,
+    conduct thorough research. Analyze the target audience profile deeper (pain points, online behavior in Portugal),
+    the market landscape in Portugal for the info-product category, and identify key online communities or influencers
+    relevant to the Portuguese target audience. Assume the current year is 2025.
+  expected_output: >
+    A detailed markdown report covering refined target audience insights for Portugal,
+    market context for the info-product category in Portugal, competitor notes (initial),
+    and relevant online hangouts/platforms frequented by the target audience.
+
+project_competitors_task:
+  description: >
+    Based on the structured project context and initial research, identify and analyze key competitors
+    offering similar info-products or training specifically targeting the Portuguese market.
+    Focus on their offerings, marketing angles, pricing, and perceived strengths/weaknesses
+    relative to the customer info-product.
+  expected_output: >
+    A competitive analysis markdown report listing 3-5 key competitors in the Portuguese market,
+    detailing their offers, marketing approach, and positioning.
+
+# --- Strategy Tasks ---
+marketing_strategy_task:
+  description: >
+    Develop a comprehensive, phased info-product launch strategy for the customer info-product,
+    targeting the Portuguese market. Synthesize the structured project context and findings from
+    the research/competitor analysis tasks. Define launch phases, offer stack, list-building tactics,
+    key messaging pillars (in Portuguese), channels, and KPIs using the LaunchStrategy model.
+  expected_output: >
+    A detailed LaunchStrategy Pydantic object outlining the tailored launch plan for Portugal,
+    with messaging concepts in Portuguese.
+
+# --- Content Creation Tasks ---
+launch_angle_and_hook_task:
+  description: >
+    Based on the Marketing Strategy and structured project context, develop 3-5 distinct creative angles
+    or hooks (in Portuguese) for the customer info-product launch campaign. These should capture attention
+    and highlight the core transformation offered. Use the LaunchHookList model.
+  expected_output: >
+    A LaunchHookList object containing a list of 3-5 unique launch campaign angles/hooks in Portuguese.
+
+create_lead_magnet_brief_task:
+  description: >
+    Based on the Marketing Strategy and structured project context (list building goals, audience), define the concept for a
+    compelling lead magnet (e.g., checklist, guide) designed to attract the ideal buyer for the
+    customer info-product info-product during pre-launch. Use the LeadMagnetBrief model.
+  expected_output: >
+    A LeadMagnetBrief object outlining the proposed lead magnet: Topic (Portuguese), Format, Key takeaways/value proposition (Portuguese),
+    and connection to the main info-product (Portuguese).
+
+write_optin_page_copy_task:
+  description: >
+    Write compelling copy (in Portuguese) for the opt-in/landing page for the lead magnet/waitlist defined in context.
+    Focus on clear benefits, strong call-to-action, and building anticipation, aligning with the brand voice.
+    Use the PageCopy model.
+  expected_output: >
+    A PageCopy object containing: Headline (Portuguese), Sub-headline (Portuguese), Body/Bullet points (Portuguese),
+    and Call-to-action text (Portuguese) for the opt-in page.
+
+write_sales_page_copy_task:
+  description: >
+    Write the primary draft of the long-form sales page copy (in Portuguese) for customer info-product.
+    Incorporate insights from the structured context, strategy, and chosen launch angles. Focus on problem/solution,
+    benefits, social proof placeholders, offer details, guarantee, and CTAs, reflecting the brand voice.
+  expected_output: >
+    A markdown document containing the draft sales page copy in Portuguese, structured logically.
+
+write_email_sequence_task_PRELAUNCH:
+  description: >
+    Write the draft email sequence (in Portuguese) for the PRE-LAUNCH phase based on context.
+    Nurture leads, provide value, tease the product, and prepare for launch. Aim for 5-7 emails.
+    Use the EmailSequence model.
+  expected_output: >
+    An EmailSequence object containing a list of Email objects (subject, body) in Portuguese for the pre-launch sequence.
+
+write_email_sequence_task_SALES:
+  description: >
+     Write the draft email sequence (in Portuguese) for the LAUNCH WINDOW (Cart Open) phase based on context.
+     Announce, highlight benefits, address objections, share testimonials placeholders, detail the offer, use urgency.
+     Aim for 7-10 emails. Use the EmailSequence model.
+  expected_output: >
+    An EmailSequence object containing a list of Email objects (subject, body) in Portuguese for the sales sequence.
+
+write_social_media_launch_posts_task:
+  description: >
+    Create a set of 10-15 draft social media posts (in Portuguese) for different launch phases based on context.
+    Tailor for Instagram/Facebook. Use the SocialMediaPlan model.
+  expected_output: >
+    A SocialMediaPlan object containing a list of SocialPost objects (text in Portuguese, phase, platform_note).
+
+# --- Review Task ---
+review_launch_content_task:
+  description: >
+    Review the key creative assets developed (all in Portuguese): Launch Angles, Lead Magnet Brief, Opt-in Page Copy, Sales Page Copy,
+    Email Sequences, Social Media Posts. Ensure quality, clarity, persuasiveness, consistency with brand voice,
+    and alignment with the Marketing Strategy and project goals derived from the structured context.
+  expected_output: >
+    A markdown document providing consolidated feedback (specify output language if needed, e.g., English feedback on Portuguese content)
+    on the Portuguese content. Indicate approval OR list specific revisions required for each asset.
+
+# --- Final Output Task ---
+compile_final_report_task:
+  description: >
+    Gather all generated outputs (structured context object/summary, research report, competitor analysis, strategy object, creative assets Pydantic/files, review feedback).
+    Synthesize these into a single, coherent final Launch Plan markdown document for the user. Structure the report logically and ensure key strategy points and content drafts are presented clearly, primarily in Portuguese.
+  expected_output: >
+    A comprehensive markdown document presenting the full Launch Plan for customer project,
+    structured clearly for the user. Include sections summarizing the extracted context, research, strategy, creative concepts, and content drafts (in Portuguese), along with review feedback and next steps.
