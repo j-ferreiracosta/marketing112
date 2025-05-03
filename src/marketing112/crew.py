@@ -243,7 +243,8 @@ class MarketingInfoProductCrew():
         return Task(
             config=self.tasks_config['extract_and_structure_knowledge_task'],
             agent=self.input_text_analyzer(),
-            output_pydantic=FullProjectContext
+            output_pydantic=FullProjectContext,
+            output_file='1structured_project_context_pt.md'
             # The input 'knowledge_base_text' will be interpolated from crew.kickoff()
         )
 
@@ -253,7 +254,7 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['research_task'],
             agent=self.lead_market_analyst(),
             context=[self.extract_and_structure_knowledge_task()], # Depends on structured context
-            output_file='market_research_report_pt.md'
+            output_file='2market_research_report_pt.md'
         )
 
     @task
@@ -263,7 +264,7 @@ class MarketingInfoProductCrew():
             agent=self.lead_market_analyst(),
              # Depends on structured context and initial research
             context=[self.extract_and_structure_knowledge_task(), self.research_task()],
-            output_file='competitor_analysis_report_pt.md'
+            output_file='3competitor_analysis_report_pt.md'
         )
 
     # Strategy Task
@@ -274,7 +275,8 @@ class MarketingInfoProductCrew():
             agent=self.chief_marketing_strategist(),
              # Depends on structured context, research, competitors
             context=[self.extract_and_structure_knowledge_task(), self.research_task(), self.project_competitors_task()],
-            output_pydantic=LaunchStrategy
+            output_pydantic=LaunchStrategy,
+            output_file='4marketing_strategy_report_pt.md'
         )
 
     # Content Creation Tasks
@@ -285,7 +287,8 @@ class MarketingInfoProductCrew():
             agent=self.creative_content_creator(),
             # Needs strategy and original context (for brand voice, keywords etc.)
             context=[self.marketing_strategy_task(), self.extract_and_structure_knowledge_task()],
-            output_pydantic=LaunchHookList
+            output_pydantic=LaunchHookList,
+            output_file='5launch_angle_and_hook_report_pt.md'
         )
 
     @task
@@ -294,7 +297,8 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['create_lead_magnet_brief_task'],
             agent=self.creative_content_creator(),
             context=[self.marketing_strategy_task(), self.extract_and_structure_knowledge_task()],
-            output_pydantic=LeadMagnetBrief
+            output_pydantic=LeadMagnetBrief,
+            output_file='6lead_magnet_brief_report_pt.md'
         )
 
     @task
@@ -303,7 +307,8 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['write_optin_page_copy_task'],
             agent=self.creative_content_creator(),
             context=[self.create_lead_magnet_brief_task(), self.marketing_strategy_task(), self.extract_and_structure_knowledge_task()],
-            output_pydantic=PageCopy
+            output_pydantic=PageCopy,
+            output_file='7optin_page_copy_draft_pt.md'
         )
 
     @task
@@ -313,7 +318,7 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['write_sales_page_copy_task'],
             agent=self.creative_content_creator(),
             context=[self.marketing_strategy_task(), self.research_task(), self.launch_angle_and_hook_task(), self.extract_and_structure_knowledge_task()],
-            output_file='sales_page_copy_draft_pt.md'
+            output_file='8sales_page_copy_draft_pt.md'
         )
 
     @task
@@ -322,7 +327,8 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['write_email_sequence_task_PRELAUNCH'],
             agent=self.email_marketing_specialist(),
             context=[self.marketing_strategy_task(), self.create_lead_magnet_brief_task(), self.extract_and_structure_knowledge_task()],
-            output_pydantic=EmailSequence
+            output_pydantic=EmailSequence,
+            output_file='9email_sequence_prelaunch_draft_pt.md'
         )
 
     @task
@@ -332,7 +338,8 @@ class MarketingInfoProductCrew():
             agent=self.email_marketing_specialist(),
              # Needs sales page copy (from file) and strategy/context
             context=[self.marketing_strategy_task(), self.write_sales_page_copy_task(), self.extract_and_structure_knowledge_task()],
-            output_pydantic=EmailSequence
+            output_pydantic=EmailSequence,
+            output_file='10email_sequence_sales_draft_pt.md'
         )
 
     @task
@@ -341,7 +348,8 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['write_social_media_launch_posts_task'],
             agent=self.social_media_manager(),
             context=[self.marketing_strategy_task(), self.launch_angle_and_hook_task(), self.extract_and_structure_knowledge_task()],
-            output_pydantic=SocialMediaPlan
+            output_pydantic=SocialMediaPlan,
+            output_file='11social_media_launch_posts_draft_pt.md'
         )
 
     # Review Task
@@ -362,7 +370,8 @@ class MarketingInfoProductCrew():
                 self.marketing_strategy_task(), # Needs strategy for alignment check
                 self.extract_and_structure_knowledge_task() # Needs original style guidelines
             ],
-            output_file='creative_review_feedback.md'
+            output_file='12creative_review_feedback.md'
+
         )
 
     # Final Output Task
@@ -385,7 +394,7 @@ class MarketingInfoProductCrew():
                 self.write_social_media_launch_posts_task(),
                 self.review_launch_content_task() # Include the feedback
             ],
-            output_file='final_info_product_launch_plan_pt.md'
+            output_file='13final_info_product_launch_plan_pt.md'
         )
 
     # --- Crew Definition ---
