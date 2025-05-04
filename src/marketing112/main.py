@@ -1,6 +1,7 @@
 import sys
 import os
-
+from dotenv import load_dotenv
+load_dotenv()  
 # Import the TextFileReader class
 from marketing112.utils.util import TextFileReader
 

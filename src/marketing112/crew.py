@@ -1,10 +1,13 @@
 # marketing112/crew.py
+import os  # Added import
+import shutil # Import shutil for moving files (if needed directly here, though moved to utility)
 from typing import List, Optional, Dict, Any
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from dotenv import load_dotenv
+from .utils.report_archiver import archive_old_reports # Import the new function
 
-load_dotenv()	
+load_dotenv()
 
 # Uncomment the following line to use an example of a custom tool
 # from marketing_posts.tools.custom_tool import MyCustomTool
@@ -13,6 +16,20 @@ load_dotenv()
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool
 from pydantic import BaseModel, Field
 
+# --- Calculate Absolute Path for Reports ---
+# Get the directory of the current script (crew.py)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Go up two levels to get the project root (marketing112 -> src -> project root)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+# Define the absolute path for the reports directory
+REPORTS_DIR_ABS = os.path.join(PROJECT_ROOT, "reports")
+
+# --- Archive Old Reports BEFORE Crew Setup ---
+# Call the archiving function using the calculated project root
+archive_old_reports(PROJECT_ROOT)
+
+# Ensure the reports directory exists (it might have been emptied by archiving)
+os.makedirs(REPORTS_DIR_ABS, exist_ok=True)
 
 # --- Pydantic Models ---
 
@@ -244,7 +261,7 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['extract_and_structure_knowledge_task'],
             agent=self.input_text_analyzer(),
             output_pydantic=FullProjectContext,
-            output_file='1structured_project_context_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '1structured_project_context_pt.md') # Use absolute path
             # The input 'knowledge_base_text' will be interpolated from crew.kickoff()
         )
 
@@ -254,7 +271,7 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['research_task'],
             agent=self.lead_market_analyst(),
             context=[self.extract_and_structure_knowledge_task()], # Depends on structured context
-            output_file='2market_research_report_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '2market_research_report_pt.md') # Use absolute path
         )
 
     @task
@@ -264,7 +281,7 @@ class MarketingInfoProductCrew():
             agent=self.lead_market_analyst(),
              # Depends on structured context and initial research
             context=[self.extract_and_structure_knowledge_task(), self.research_task()],
-            output_file='3competitor_analysis_report_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '3competitor_analysis_report_pt.md') # Use absolute path
         )
 
     # Strategy Task
@@ -276,7 +293,7 @@ class MarketingInfoProductCrew():
              # Depends on structured context, research, competitors
             context=[self.extract_and_structure_knowledge_task(), self.research_task(), self.project_competitors_task()],
             output_pydantic=LaunchStrategy,
-            output_file='4marketing_strategy_report_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '4marketing_strategy_report_pt.md') # Use absolute path
         )
 
     # Content Creation Tasks
@@ -288,7 +305,7 @@ class MarketingInfoProductCrew():
             # Needs strategy and original context (for brand voice, keywords etc.)
             context=[self.marketing_strategy_task(), self.extract_and_structure_knowledge_task()],
             output_pydantic=LaunchHookList,
-            output_file='5launch_angle_and_hook_report_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '5launch_angle_and_hook_report_pt.md') # Use absolute path
         )
 
     @task
@@ -298,7 +315,7 @@ class MarketingInfoProductCrew():
             agent=self.creative_content_creator(),
             context=[self.marketing_strategy_task(), self.extract_and_structure_knowledge_task()],
             output_pydantic=LeadMagnetBrief,
-            output_file='6lead_magnet_brief_report_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '6lead_magnet_brief_report_pt.md') # Use absolute path
         )
 
     @task
@@ -308,7 +325,7 @@ class MarketingInfoProductCrew():
             agent=self.creative_content_creator(),
             context=[self.create_lead_magnet_brief_task(), self.marketing_strategy_task(), self.extract_and_structure_knowledge_task()],
             output_pydantic=PageCopy,
-            output_file='7optin_page_copy_draft_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '7optin_page_copy_draft_pt.md') # Use absolute path
         )
 
     @task
@@ -318,7 +335,7 @@ class MarketingInfoProductCrew():
             config=self.tasks_config['write_sales_page_copy_task'],
             agent=self.creative_content_creator(),
             context=[self.marketing_strategy_task(), self.research_task(), self.launch_angle_and_hook_task(), self.extract_and_structure_knowledge_task()],
-            output_file='8sales_page_copy_draft_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '8sales_page_copy_draft_pt.md') # Use absolute path
         )
 
     @task
@@ -328,7 +345,7 @@ class MarketingInfoProductCrew():
             agent=self.email_marketing_specialist(),
             context=[self.marketing_strategy_task(), self.create_lead_magnet_brief_task(), self.extract_and_structure_knowledge_task()],
             output_pydantic=EmailSequence,
-            output_file='9email_sequence_prelaunch_draft_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '9email_sequence_prelaunch_draft_pt.md') # Use absolute path
         )
 
     @task
@@ -339,7 +356,7 @@ class MarketingInfoProductCrew():
              # Needs sales page copy (from file) and strategy/context
             context=[self.marketing_strategy_task(), self.write_sales_page_copy_task(), self.extract_and_structure_knowledge_task()],
             output_pydantic=EmailSequence,
-            output_file='10email_sequence_sales_draft_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '10email_sequence_sales_draft_pt.md') # Use absolute path
         )
 
     @task
@@ -349,7 +366,7 @@ class MarketingInfoProductCrew():
             agent=self.social_media_manager(),
             context=[self.marketing_strategy_task(), self.launch_angle_and_hook_task(), self.extract_and_structure_knowledge_task()],
             output_pydantic=SocialMediaPlan,
-            output_file='11social_media_launch_posts_draft_pt.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '11social_media_launch_posts_draft_pt.md') # Use absolute path
         )
 
     # Review Task
@@ -370,7 +387,7 @@ class MarketingInfoProductCrew():
                 self.marketing_strategy_task(), # Needs strategy for alignment check
                 self.extract_and_structure_knowledge_task() # Needs original style guidelines
             ],
-            output_file='12creative_review_feedback.md'
+            output_file=os.path.join(REPORTS_DIR_ABS, '12creative_review_feedback.md') # Use absolute path
 
         )
 
@@ -394,7 +411,8 @@ class MarketingInfoProductCrew():
                 self.write_social_media_launch_posts_task(),
                 self.review_launch_content_task() # Include the feedback
             ],
-            output_file='13final_info_product_launch_plan_pt.md'
+            # Save the final report in the reports folder
+            output_file=os.path.join(REPORTS_DIR_ABS, '13final_info_product_launch_plan_pt.md') # Use absolute path
         )
 
     # --- Crew Definition ---

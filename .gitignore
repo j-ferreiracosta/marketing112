@@ -2,5 +2,6 @@
 __pycache__/
 .venv/
 oldReports/
+OldReports/
 src/marketing112/mainV1.py
 src/marketing112/crewV1.py

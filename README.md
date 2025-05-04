@@ -1,14 +1,14 @@
 # Marketing Info Product Launch Crew (marketing112)
 
-This project utilizes the CrewAI framework to automate the generation of a comprehensive marketing launch plan for an information product, primarily targeting a Portuguese-speaking audience. It takes unstructured text input describing the product, goals, and audience, and uses a team of AI agents powered by Google Gemini to produce strategic documents and marketing content.
+This project utilizes the CrewAI framework to automate the generation of a comprehensive marketing launch plan for an information product, primarily targeting a Portuguese-speaking audience. It takes user input describing the product, goals, and audience through a Gradio interface and uses a team of AI agents powered by Google Gemini to produce strategic documents and marketing content.
 
 ## Features
 
-*   **Unstructured Input Processing:** Reads raw text from `src/marketing112/inputs.txt` to kickstart the crew's workflow.
+*   **Gradio Interface:** Provides a web interface using Gradio for user input and interaction.
 *   **Knowledge Extraction:**
     *   **Agent:** `input_text_analyzer`
     *   **Task:** `extract_and_structure_knowledge_task`
-    *   **Role:** Extracts key information from unstructured text and structures it into the `FullProjectContext` model.
+    *   **Role:** Extracts key information from user input and structures it into the `FullProjectContext` model.
 *   **Market & Competitor Analysis:**
     *   **Agent:** `lead_market_analyst`
     *   **Task:** `project_competitors_task`
@@ -44,6 +44,7 @@ This project utilizes the CrewAI framework to automate the generation of a compr
     *   **Task:** `compile_final_report_task`
     *   **Role:** Synthesizes all outputs into a comprehensive launch plan document.
 *   **Powered by Gemini:** Utilizes Google's Gemini model for advanced language processing and task execution.
+*   **Organized Output:** Saves generated reports to a dedicated `reports/` directory, with previous runs archived in `OldReports/`.
 
 ## Project Structure
 
@@ -53,30 +54,33 @@ marketing112/
 ├── config/               # CrewAI agent and task configurations
 │   ├── agents.yaml
 │   └── tasks.yaml
-├── knowledge/            # Potentially deprecated input directory
+├── knowledge/            # Stores user preferences or potentially other knowledge artifacts
+│   └── user_preference.txt
 ├── src/
 │   └── marketing112/
 │       ├── __init__.py
-│       ├── main.py         # Main entry point (run, train)
+│       ├── app.py          # <<< Gradio application entry point
+│       ├── main.py         # Main entry point (potentially used by app.py)
 │       ├── crew.py         # Crew definition, agents, tasks, LLM setup
 │       ├── utils/
 │       │   ├── __init__.py
-│       │   └── util.py     # Utility classes (e.g., TextFileReader)
-│       ├── inputs.txt      # <<< INPUT FILE for unstructured text description
+│       │   └── util.py     # Utility classes
 │       ├── crewV1.py       # Older crew version (not used)
 │       └── mainV1.py       # Older main version (not used)
+├── reports/              # <<< OUTPUT DIRECTORY for generated reports from the latest run
+│   ├── 1structured_project_context_pt.md
+│   ├── 2market_research_report_pt.md
+│   ├── ... (other generated reports) ...
+│   └── 13final_info_product_launch_plan_pt.md
+├── OldReports/           # Archive of reports from previous runs
+│   ├── 1/
+│   ├── 2/
+│   └── ...
 ├── tests/                # Placeholder for tests
 ├── requirements.txt      # Project dependencies
+├── pyproject.toml        # Project metadata and build configuration
 ├── uv.lock               # Lock file for uv dependencies
 └── README.md             # This file
-
-# --- Generated Output Files (in project root) ---
-# market_research_report_pt.md
-# competitor_analysis_report_pt.md
-# sales_page_copy_draft_pt.md
-# creative_review_feedback.md
-# final_info_product_launch_plan_pt.md
-# (Plus potentially JSON outputs if tasks are configured differently)
 ```
 
 ## Setup
@@ -92,12 +96,37 @@ marketing112/
    python -m venv .venv
    ```
 
-3. Install dependencies:
+3. Activate the virtual environment:
+   ```bash
+   .venv\Scripts\activate
+   ```
+
+4. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Configure Environment Variables:
+5. Deactivate the virtual environment:
+   ```bash
+   .venv\Scripts\deactivate.bat
+   ```
+
+6. Synchronize dependencies:
+   ```bash
+   uv sync
+   ```
+
+7. Reactivate the virtual environment:
+   ```bash
+   .venv\Scripts\activate
+   ```
+
+8. Install CrewAI:
+   ```bash
+   crewai install
+   ```
+
+9. Configure Environment Variables:
    ```bash
    cp .env.example .env
    ```
@@ -109,34 +138,31 @@ marketing112/
    * Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
    * Obtain a Serper API key from [Serper.dev](https://serper.dev/) for the search tool.
 
-5. Run the agent:
-   ```bash
-   crewai run
-   ```
-
 ## Usage
 
-1.  **Prepare Input:**
-    *   Edit the `src/marketing112/inputs.txt` file.
-    *   Paste the unstructured text describing your information product, target audience, marketing goals, existing assets, brand voice, etc. Write this description in Portuguese, as the agents are primarily configured for it.
-
-2.  **Run the Crew:**
-    The standard way to run a CrewAI project:
+1.  **Activate Environment:**
+    Ensure your virtual environment is active:
     ```bash
-    crewai run 
+    .venv\Scripts\activate
     ```
 
-3.  **Check Outputs:**
-    *   Monitor the console for agent activity and logs (`verbose=True` is set).
-    *   Check the project root directory for the generated Markdown files (listed in the Project Structure section).
+2.  **Run the Gradio App:**
+    Launch the application using the following command:
+    ```bash
+    python src/marketing112/app.py
+    ```
 
-4.  **Training (Experimental):**
-    *   The `train()` function in `main.py` exists but uses outdated structured inputs.
-    *   To run it (for demonstration purposes only): `python src/marketing112/main.py train <number_of_iterations>`
-    *   **Note:** This training function needs significant adaptation to work effectively with the current unstructured `knowledge_base_text` input format.
+3.  **Use the Interface:**
+    *   Open your web browser and navigate to the local URL provided by Gradio (usually `http://127.0.0.1:7860`).
+    *   Enter the required information about your product, audience, and goals into the input fields provided in the Gradio interface.
+    *   Submit the form to start the CrewAI process.
+
+4.  **Check Outputs:**
+    *   Monitor the console where you ran the app for agent activity and logs.
+    *   Check the `reports/` directory for the generated Markdown files (e.g., `market_research_report_pt.md`, `final_info_product_launch_plan_pt.md`, etc.). Previous runs' outputs are moved to numbered subdirectories within `OldReports/`.
 
 ## Configuration
 
 *   **LLM:** Google Gemini (`gemini-pro`) is explicitly configured in `src/marketing112/crew.py`.
-*   **Agents & Tasks:** The specific roles, goals, tools, and instructions for each AI agent and task are defined in `config/agents.yaml` and `config/tasks.yaml`. You can modify these files to customize the crew's behavior.
-*   **Tools:** The crew utilizes `SerperDevTool` for web searches and `ScrapeWebsiteTool` for accessing website content. Ensure API keys are set correctly.
+*   **Agents & Tasks:** The specific roles, goals, tools, and instructions for each AI agent and task are defined in `config/agents.yaml` and `config/tasks.yaml`. Modify these files to customize the crew's behavior.
+*   **Tools:** The crew utilizes `SerperDevTool` for web searches and potentially `ScrapeWebsiteTool` (check `agents.yaml` for usage). Ensure API keys for any required tools are set correctly in your `.env` file.
