@@ -2,6 +2,8 @@
 
 This project utilizes the CrewAI framework to automate the generation of a comprehensive marketing launch plan for an information product, primarily targeting a Portuguese-speaking audience. It takes user input describing the product, goals, and audience through a Gradio interface and uses a team of AI agents powered by Google Gemini to produce strategic documents and marketing content.
 
+![Application UI Screenshot](image.jpg)
+
 ## Features
 
 *   **Gradio Interface:** Provides a web interface using Gradio for user input and interaction.
